@@ -1,4 +1,4 @@
-from extracting_book_data import get_book_data_from_file, sort_books_by_weight, \
+from book_packer import get_book_data_from_file, sort_books_by_weight, \
     sort_books_into_boxes, export_boxes_to_json, extract_book_data, Book, Box, OUTPUT_FILE
 import unittest
 import json
@@ -117,15 +117,12 @@ class TestExtractBookData(unittest.TestCase):
 
         data = f.read()
         jsondata = json.loads(data)
-        import pdb; pdb.set_trace()
         # look at first record
-        self.assertEqual(jsondata[0]['totalWeight'], 10)
+        self.assertEqual(jsondata[0]['totalWeight'], 7.3)
         # look at a book
-        self.assertEqual(jsondata[0]['contents'][0]['author'], "Foo")
+        self.assertEqual(jsondata[0]['contents'][0]['author'], "Neil Gaiman")
+        self.assertEqual(jsondata[0]['contents'][1]['author'], "David S Cohen")
 
 
-
-        
- 
 if __name__ == '__main__':
     unittest.main()
