@@ -8,7 +8,7 @@ $ pip install -r requirements.txt
 
 ## To extract the data from the books direction and output to a JSON file: 
 
-$ python extracting_book_data.py
+$ python book_packer.py
 
 ## Where to find the output:
 
@@ -16,4 +16,4 @@ JSON data from the books will be data.json
 
 ## How to run tests:
 
-$ python -m unittest tests.test_extracting_book_data
+$ python -m unittest tests.test_book_packer
