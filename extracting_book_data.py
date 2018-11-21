@@ -127,27 +127,16 @@ def sort_books_into_boxes(sorted_books):
     return all_boxes 
             
  
-class CustomEncoder(json.JSONEncoder):
- 
-     def default(self, o):
-        # json.dumps(obj, default=lambda x: x.__dict__)
-        # return {'__{}__'.format(o.__class__.__name__): o.__dict__}
-        return {'__{}__'.format(o.__class__.__name__): o.__dict__}
-
-
 def export_boxes_to_json(all_boxes):
     """
-    get a list of Box objects and export contents to json format 
+    get a list of Box objects and export contents to json format
+    We don't return anything because it's easier to dump the json directly to a file.  
     """
 
+    # TODO: move file name to the top of the file 
     f = open("data.json", "w")
-    #  json.dump(jsonData, outfile, sort_keys = True, indent = 4,
-    #            ensure_ascii = False, separators=(',', ': '))
-    # serialized = json.dump(all_boxes, f, indent=4, cls=CustomEncoder)
     serialized = json.dump(all_boxes, f, indent=4, default=lambda x: x.__dict__)
     
-    print serialized
-    return serialized
 
 
 if __name__ == "__main__":
@@ -172,24 +161,3 @@ if __name__ == "__main__":
     export_boxes_to_json(all_boxes)
 
     
-    # extract one book
-    # f = codecs.open("data/" + "book9.html")
-    # f = f.read()
-    # soup = BeautifulSoup(f)
-    # title = soup.select("#btAsinTitle")[0].text
-    # author = soup.select(".buying span a")[0].text
-    # price = soup.select("#actualPriceValue")[0].text
-        
-    # isbn_10 = soup.select("td.bucket ul li")[3].text
-    # isbn_10 = isbn_10.split(":")[1]
-    # isbn_10 = isbn_10.strip()
-    # # weight looks like this: Shipping Weight: 1.2 pounds (View shipping rates and policies)
-    # weight = soup.select("td.bucket ul li")[6].text
-    # weight = weight.split("(")[0]
-    # weight = weight.split(":")[1]
-    # weight = weight.strip()    
-    # book = {"title": title, "author": author, "price": price, "weight": weight, "ISBN-10": isbn_10}
-    # print "filename %s" % filename
-    # print book
-    # print "\n\n"
-

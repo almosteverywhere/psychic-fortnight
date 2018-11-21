@@ -56,10 +56,10 @@ class TestSortBooksIntoBoxes(unittest.TestCase):
     def test_sort_empty_list(self):
         list_of_boxes = sort_books_into_boxes([])
         self.assertEqual(list_of_boxes, [])
+        
 
 class TestExportBoxesToJson(unittest.TestCase):
 
-    # TODO: This test is crap
     def test_export_boxes_to_json(self):
 
         book1 = Book(author="Foo", weight=10)
@@ -74,14 +74,15 @@ class TestExportBoxesToJson(unittest.TestCase):
         box2.append(book3)
         box2.append(book2)
 
-        myjson = export_boxes_to_json([box1])
-        import pdb; pdb.set_trace()
-        # json.loads(myjson)
-
-
-
-
-
-
+        export_boxes_to_json([box1, box2])
+        f = open("data.json")
+        data = f.read()
+        jsondata = json.loads(data)
+        # look at first record
+        self.assertEqual(jsondata[0]['totalWeight'], 10)
+        # look at a book
+        self.assertEqual(jsondata[0]['contents'][0]['author'], "Foo")
+        
+ 
 if __name__ == '__main__':
     unittest.main()
