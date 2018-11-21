@@ -1,9 +1,9 @@
-from bs4 import BeautifulSoup
-from operator import attrgetter
 import codecs
 import os
 import re
 import json
+from bs4 import BeautifulSoup
+from operator import attrgetter
 
 OUTPUT_FILE = "data.json"
 DATA_DIR = "data"
@@ -11,7 +11,7 @@ DATA_DIR = "data"
 
 class Book(object):
     """
-    Book, it has an author, title, price, shipping weight and ISBN 10 number.
+    Represents a book, it has an author, title, price, shipping weight and ISBN 10 number.
     The packed field exists to make sorting it into boxes easier. 
     """
     def __init__(self, author="", title="", price=0, weight=0.0, isbn_10=""):
@@ -56,7 +56,7 @@ class Box(object):
         self.contents.append(book)
         # This occasionally gets strange floating point errors, which can be solved
         # by using Decimal, however Decimal is not JSON serializable, so we're leaving
-        # as is for now. This should be solved for production. 
+        # as is for now. This should be solved in a production application.
         self.totalWeight = self.totalWeight + book.weight
 
 
@@ -72,26 +72,28 @@ def get_book_data_from_file(filename):
     f = f.read()
     soup = BeautifulSoup(f, features="html.parser")
 
-    # title, author and price are straightforward because they're well marked in divs
+    # Title, author and price are straightforward because they're well marked in divs
     title = soup.select("#btAsinTitle")[0].text
     author = soup.select(".buying span a")[0].text
     
-    # sometimes it can have a rental price but in most cases it has this price
+    # Sometimes it can have a rental price but in most cases it has this price
     price_div_list = soup.select("#actualPriceValue")
     if price_div_list:
         price = price_div_list[0].text
     else: 
-        # this is super sketchy, for items where you can rent, the 
+        # this is complicated, for items where you can rent, the 
         # first price will be a sale price, the next
         # a true rental price but they are both marked up as rentPrice in the html
         price_div_list = soup.select(".buyNewOffers .rentPrice")
         if price_div_list:
             price = price_div_list = price_div_list[0].text
         else:
-            price = "N/A"
+            # Should probably check this doesn't cause problems, for small data it's fine
+            # but for production should check this more. 
+            price = "0"
     
-    # these don't have consistent locations in the list and they also don't
-    #  have markup around them
+    # These don't have consistent locations in the list and they also don't
+    # have markup around them, so we have to look at strings surrounding value we want.
     product_details_ul = soup.select("td.bucket ul li")
     
     for li in product_details_ul:
@@ -148,7 +150,7 @@ def sort_books_into_boxes(sorted_books):
     # once, this avoids having to deal with a parallel list of packed bits, or having to remove
     # packed books from the list of existing books
 
-    # While there's still books to  be packed
+    # While there's still books to be packed
     while(books_not_packed) > 0:
         # go over the list of all books and see if any can fit in the current box
         for i in range(0,len(sorted_books)):

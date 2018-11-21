@@ -1,13 +1,14 @@
 from book_packer import get_book_data_from_file, sort_books_by_weight, \
-    sort_books_into_boxes, export_boxes_to_json, extract_book_data, Book, Box, OUTPUT_FILE
+    sort_books_into_boxes, export_boxes_to_json, extract_book_data, \
+    Book, Box, OUTPUT_FILE
 import unittest
 import json
 
 class TestGetBookDataFromFile(unittest.TestCase):
     def test_get_book_data_from_file(self):
 
-        # ideally we'd mock up a test file here, but in the interest of time
-        # let's use an existing one with known values 
+        # Ideally we'd mock up a test file here, but in the interest of time
+        # let's use an existing one with known values.
         book = get_book_data_from_file("book9.html")
         self.assertEqual(book.author, u"Stephen Wolfram")
         self.assertEqual(book.title, u"A New Kind of Science [Hardcover]")
@@ -45,7 +46,7 @@ class TestSortBooksIntoBoxes(unittest.TestCase):
         box2.append(book3)
         box2.append(book2)
 
-        # getting object deep comparisons related issues here, just 
+        # Getting object deep comparison related issues here, just 
         # look to make sure boxes have the requisite weight, which in this 
         # case means the proper books went into each box, for production we could 
         # be more accurate here 
@@ -79,11 +80,10 @@ class TestExportBoxesToJson(unittest.TestCase):
         data = f.read()
         # json loads wil die if it's not proper json
         jsondata = json.loads(data)
-        # look at first record
+        # Look at first record
         self.assertEqual(jsondata[0]['totalWeight'], 10)
-        # look at a book
+        # Look at a book
         self.assertEqual(jsondata[0]['contents'][0]['author'], "Foo")
-
         # We could do more extensive testing of the json here if we were in production
 
 
