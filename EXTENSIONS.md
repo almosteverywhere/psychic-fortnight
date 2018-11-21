@@ -2,7 +2,7 @@
 2. Extract data other than books (for example, other verticals Datafiniti
 currently offers to its customers)
 
-It's easy to scrape data from any site that has a consistent template, so where a certain item of data is located within a consistent DOM element -- Amazon, Ebay, etc, it becomes complicated when you want to scrape a large number of sites, or when there
+It's usually easy to scrape data from any site that has a consistent template, so where a certain item of data is located within a consistent DOM element -- Amazon, Ebay, etc, it becomes complicated when you want to scrape a large number of sites, or when there
 are issues like pages that need javascript to be rendered (needs to be pre-rendered in a headless browser or through a service online), or some types of sites that use react or another framework affecting when data is injected into the DOM, as well as servers that prevent web crawling. Of course there are many more possible issues. 
 
 I gave a talk about analyzing rap lyrics using Python (which involved scraping to get lyrics data) that tackled a lot of issues that can occur: 
