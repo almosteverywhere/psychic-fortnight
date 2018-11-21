@@ -7,14 +7,19 @@ import json
 
 OUTPUT_FILE = "data.json"
 
-# Class to represent a book
+
 class Book(object):
+    """
+    Book, it has an author, title, price, shipping weight and ISBN 10 number.
+    The packed field exists to make sorting it into boxes easier. 
+    """
     def __init__(self, author="", title="", price=0, weight=0.0, isbn_10=""):
         self.author = author
         self.title = title
         self.price = price
         self.weight = weight
         self.isbn_10 = isbn_10
+        # This is to make sorting the book into boxes easier. 
         self.packed = False
         
     def __str__(self):
@@ -44,9 +49,13 @@ class Box(object):
 
     def append(self, book):
         """
-        Adds a book to the contents of the box and updates the total box weight
+        Adds a book to the contents of the box and add the weight of the book to the 
+        total box weight. 
         """
         self.contents.append(book)
+        # This occasionally gets strange floating point errors, which can be solved
+        # by using Decimal, however Decimal is not JSON serializable, so we're leaving
+        # as is for now. This should be solved for production. 
         self.totalWeight = self.totalWeight + book.weight
 
 
@@ -59,6 +68,7 @@ def get_book_data_from_file(filename):
     f = codecs.open("data/" + filename)
     f = f.read()
     soup = BeautifulSoup(f, features="html.parser")
+
     # title, author and price are straightforward because they're well marked in divs
     title = soup.select("#btAsinTitle")[0].text
     author = soup.select(".buying span a")[0].text
@@ -111,26 +121,48 @@ def sort_books_by_weight(books):
 
 
 def sort_books_into_boxes(sorted_books):
-    # do it by books:
+    """
+    Given a sorted list of book objects, return a list of boxes containing a reasonable
+    packing of the books into boxes, with each box containing not more than 10 pounds of books.
+    Sorting like this is related to knapsack problem, which is NP-complete, 
+    so in the interests of time we implemented a simple solution since our list of books is not long. 
+    """
+    
     all_boxes = []
     total_boxes = 1
     current_box = Box(id=total_boxes)
     books_not_packed = len(sorted_books)
     
+    # Books are sorted from the highest to lowest weight. Find the highest weight book
+    # that will fit into the current box. When we can't find any more books to fit in,
+    # start a new box.
+
+    # We set a boolean in the Box object called "packed" to make sure we only pack each book
+    # once, this avoids having to deal with a parallel list of packed bits, or having to remove
+    # packed books from the list of existing books
+
+    # While there's still books to  be packed
     while(books_not_packed) > 0:
+        # go over the list of all books and see if any can fit in the current box
         for i in range(0,len(sorted_books)):
             book = sorted_books[i]
-            # 0 means not sorted yet
+            # 0 means not packed yet
+            # If this book is unpacked and can fit in the current box, put it in the box
             if not book.packed and (book.weight + current_box.totalWeight) <= 10:
                 # add this book to the box
+                # the box object handles updating its total weight
                 current_box.append(book)
                 
-                # set this book to sorted
+                # set this book to packed
                 book.packed = True 
+
+                # One less book to pack 
                 books_not_packed = books_not_packed - 1
  
         # start a new box
         all_boxes.append(current_box)
+        # we keep track of total_boxes so far so we can assign an id to each box 
+        # for the JSON output
         total_boxes = total_boxes + 1
         current_box = Box(id=total_boxes)
 
@@ -139,15 +171,21 @@ def sort_books_into_boxes(sorted_books):
  
 def export_boxes_to_json(all_boxes, output_file=OUTPUT_FILE):
     """
-    get a list of Box objects and export contents to json format
+    Given a list of Box objects, export contents to json format
     We don't return anything because it's easier to dump the json directly to a file.  
     """
 
     f = open(output_file, "w")
+    # We need this default because Python objects are not directly serializable by json
     json.dump(all_boxes, f, indent=4, default=lambda x: x.__dict__)
-    
 
-if __name__ == "__main__":
+
+def extract_book_data():
+    """
+    Given a set of sample book files, extract the book data, pack the 20 books into
+    N boxes with a weight of no more than 10 pounds each, and output the box data to
+    a JSON file. 
+    """
 
     books = []
 
@@ -164,3 +202,12 @@ if __name__ == "__main__":
 
     # boxes to json format
     export_boxes_to_json(all_boxes)
+
+    
+
+if __name__ == "__main__":
+
+    extract_book_data()
+    
+
+    

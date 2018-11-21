@@ -86,6 +86,25 @@ class TestExportBoxesToJson(unittest.TestCase):
         self.assertEqual(jsondata[0]['contents'][0]['author'], "Foo")
 
         # We could do more extensive testing of the json here if we were in production
+
+
+class TestBoxClass(unittest.TestCase):
+
+    def test_update_box_weight(self):
+        book1 = Book(author="Foo", weight=6)
+        book2 = Book(author="Bar", weight=1)
+        box1 = Box(id=1)
+        box1.append(book1)
+        box1.append(book2)
+        self.assertEqual(box1.totalWeight, 7)
+
+    # Note that there are issues with floating point representations when adding
+    # boxes where 6.4 + 1.4 = 7.80000000001 sometimes. This exists for all versions of
+    #  Python and all processors. This is something that should be
+    # solved for a production application. However, the easiest solution which is to use
+    # the Decimal module for arithmetic is not json serializable. In the interest of time
+    # I'm going to leave it as is, but this is something that should be solved in a production
+    # application. 
         
  
 if __name__ == '__main__':
