@@ -12,7 +12,7 @@ $ python book_packer.py
 
 ## Where to find the output:
 
-JSON data from the books will be data.json
+JSON data from the books will be 'data.json'
 
 ## How to run tests:
 
