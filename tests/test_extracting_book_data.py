@@ -1,5 +1,5 @@
 from extracting_book_data import get_book_data_from_file, sort_books_by_weight, \
-    sort_books_into_boxes, export_boxes_to_json, Book, Box
+    sort_books_into_boxes, export_boxes_to_json, Book, Box, OUTPUT_FILE
 import unittest
 import json
 
@@ -63,6 +63,7 @@ class TestExportBoxesToJson(unittest.TestCase):
 
     def test_export_boxes_to_json(self):
 
+        test_file = "test.json"
         book1 = Book(author="Foo", weight=10)
         book2 = Book(author="Bar", weight=1)
         book3 = Book(author="Baz", weight=5)
@@ -73,17 +74,18 @@ class TestExportBoxesToJson(unittest.TestCase):
         box2.append(book3)
         box2.append(book2)
 
-        export_boxes_to_json([box1, box2])
-        f = open("data.json")
+        export_boxes_to_json([box1, box2], output_file="test.json")
+        
+        f = open("test.json")
         data = f.read()
+        # json loads wil die if it's not proper json
         jsondata = json.loads(data)
         # look at first record
         self.assertEqual(jsondata[0]['totalWeight'], 10)
         # look at a book
         self.assertEqual(jsondata[0]['contents'][0]['author'], "Foo")
 
-
-    # We could do more extensive testing of the json here if we were in production
+        # We could do more extensive testing of the json here if we were in production
         
  
 if __name__ == '__main__':

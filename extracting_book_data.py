@@ -5,6 +5,7 @@ import os
 import re
 import json
 
+OUTPUT_FILE = "data.json"
 
 # Class to represent a book
 class Book(object):
@@ -22,8 +23,17 @@ class Book(object):
 
 
 class Box(object):
+    """
+    Represents a box, it has an id, a total weight of all the books inside, and
+    a list of books
+    """
 
     def __init__(self, id=None):
+        """
+        Id is mostly to give the box number for json
+        Total weight is the total weight of all books
+        Contents is a list of all books contained in the box. 
+        """
         self.id = id 
         self.totalWeight = 0 
         self.contents = []
@@ -127,14 +137,13 @@ def sort_books_into_boxes(sorted_books):
     return all_boxes 
             
  
-def export_boxes_to_json(all_boxes):
+def export_boxes_to_json(all_boxes, output_file=OUTPUT_FILE):
     """
     get a list of Box objects and export contents to json format
     We don't return anything because it's easier to dump the json directly to a file.  
     """
 
-    # TODO: move file name to the top of the file 
-    f = open("data.json", "w")
+    f = open(output_file, "w")
     json.dump(all_boxes, f, indent=4, default=lambda x: x.__dict__)
     
 
@@ -145,9 +154,6 @@ if __name__ == "__main__":
     # extract book data from files 
     for filename in os.listdir("data"):
         book = get_book_data_from_file(filename)
-        # print "filename %s" % filename
-        # print book
-        # print "\n\n"
         books.append(book)
 
     # sort the list of books by weight:
@@ -158,5 +164,3 @@ if __name__ == "__main__":
 
     # boxes to json format
     export_boxes_to_json(all_boxes)
-
-    
