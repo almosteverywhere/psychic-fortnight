@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 from operator import attrgetter
 import codecs
 import os
+import io
 import re
 import json
 
@@ -20,11 +21,11 @@ class Book(object):
 
 
 class Box(object):
+
     def __init__(self, id=None):
         self.id = id 
         self.totalWeight = 0 
         self.contents = []
-        
         
         
     def __str__(self):
@@ -37,10 +38,6 @@ class Box(object):
         self.contents.append(book)
         self.totalWeight = self.totalWeight + book.weight
 
-    def toJSON(self):
-
-        return json.dumps(self, default=lambda o: o.__dict__, 
-            sort_keys=False, indent=4)
 
 
 def get_book_data_from_file(filename):
@@ -97,7 +94,6 @@ def sort_books_by_weight(books):
     """
     sorted_books = sorted(books, key=attrgetter('weight'), reverse=True) 
     
-
     return sorted_books
 
 
@@ -111,13 +107,12 @@ def sort_books_into_boxes(sorted_books):
     # books_not_packed = len(sorted_books)
     books_not_packed = len(sorted_books)
     
-
     while(books_not_packed) > 0:
         for i in range(0,len(sorted_books)):
             book = sorted_books[i]
             # 0 means not sorted yet
             if not book.packed and (book.weight + current_box.totalWeight) <= 10:
-#               # add this book to the box
+                # add this book to the box
                 current_box.append(book)
                 
                 # set this book to sorted
@@ -131,24 +126,28 @@ def sort_books_into_boxes(sorted_books):
 
     return all_boxes 
             
+ 
+class CustomEncoder(json.JSONEncoder):
+ 
+     def default(self, o):
+        # json.dumps(obj, default=lambda x: x.__dict__)
+        # return {'__{}__'.format(o.__class__.__name__): o.__dict__}
+        return {'__{}__'.format(o.__class__.__name__): o.__dict__}
+
 
 def export_boxes_to_json(all_boxes):
     """
     get a list of Box objects and export contents to json format 
     """
 
-    # for box in all_boxes:
-    #     print "-" * 20
-    #     print box 
-
-        # for book in box.contents:
-        #     print book
-            
-    # print "Total boxes %s" % len(all_boxes)
-
-
-    for box in all_boxes:
-        print box.toJSON()
+    f = open("data.json", "w")
+    #  json.dump(jsonData, outfile, sort_keys = True, indent = 4,
+    #            ensure_ascii = False, separators=(',', ': '))
+    # serialized = json.dump(all_boxes, f, indent=4, cls=CustomEncoder)
+    serialized = json.dump(all_boxes, f, indent=4, default=lambda x: x.__dict__)
+    
+    print serialized
+    return serialized
 
 
 if __name__ == "__main__":
@@ -170,10 +169,9 @@ if __name__ == "__main__":
     all_boxes = sort_books_into_boxes(books)
 
     # boxes to json format
-    json = export_boxes_to_json(all_boxes)
+    export_boxes_to_json(all_boxes)
 
-
-
+    
     # extract one book
     # f = codecs.open("data/" + "book9.html")
     # f = f.read()
@@ -194,7 +192,4 @@ if __name__ == "__main__":
     # print "filename %s" % filename
     # print book
     # print "\n\n"
-
-
-
 
