@@ -2,9 +2,9 @@ from bs4 import BeautifulSoup
 from operator import attrgetter
 import codecs
 import os
-import io
 import re
 import json
+
 
 # Class to represent a book
 class Book(object):
@@ -17,7 +17,8 @@ class Book(object):
         self.packed = False
         
     def __str__(self):
-        return "%s %s %s %s %s" % (self.author, self.title, self.price, self.weight, self.isbn_10)
+        return "%s %s %s %s %s" % (self.author, self.title, self.price, 
+                self.weight, self.isbn_10)
 
 
 class Box(object):
@@ -39,7 +40,6 @@ class Box(object):
         self.totalWeight = self.totalWeight + book.weight
 
 
-
 def get_book_data_from_file(filename):
     """
     Takes a filename 
@@ -58,7 +58,8 @@ def get_book_data_from_file(filename):
     if price_div_list:
         price = price_div_list[0].text
     else: 
-        # this is super sketchy, for items where you can rent, the first price will be a sale price, the next
+        # this is super sketchy, for items where you can rent, the 
+        # first price will be a sale price, the next
         # a true rental price but they are both marked up as rentPrice in the html
         price_div_list = soup.select(".buyNewOffers .rentPrice")
         if price_div_list:
@@ -66,11 +67,13 @@ def get_book_data_from_file(filename):
         else:
             price = "N/A"
     
-    # these don't have consistent locations in the list and they also don't have markup around them
+    # these don't have consistent locations in the list and they also don't
+    #  have markup around them
     product_details_ul = soup.select("td.bucket ul li")
     
     for li in product_details_ul:
-        # weight looks like tis: Shipping Weight: 1.2 pounds (View shipping rates and policies)
+        # weight looks like this: 
+        # Shipping Weight: 1.2 pounds (View shipping rates and policies)
         if re.match("Shipping Weight:", li.text):
             weight = li.text
             weight = weight.split("(")[0]
@@ -102,9 +105,6 @@ def sort_books_into_boxes(sorted_books):
     all_boxes = []
     total_boxes = 1
     current_box = Box(id=total_boxes)
-    book_weight = 0
-    max_weight = 10
-    # books_not_packed = len(sorted_books)
     books_not_packed = len(sorted_books)
     
     while(books_not_packed) > 0:
@@ -135,9 +135,8 @@ def export_boxes_to_json(all_boxes):
 
     # TODO: move file name to the top of the file 
     f = open("data.json", "w")
-    serialized = json.dump(all_boxes, f, indent=4, default=lambda x: x.__dict__)
+    json.dump(all_boxes, f, indent=4, default=lambda x: x.__dict__)
     
-
 
 if __name__ == "__main__":
 

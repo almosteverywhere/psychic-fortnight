@@ -24,7 +24,7 @@ class TestSortBooksByWeight(unittest.TestCase):
         book1 = Book(author="Foo", weight=10)
         book2 = Book(author="Bar", weight=1)
         book3 = Book(author="Baz", weight=5)
-        books = [book1,book2,book3]
+        books = [book1, book2, book3]
         self.assertEqual(sort_books_by_weight(books), [book1, book3, book2])
 
     def test_sort_empty_list_returns_empty_list(self):
@@ -46,9 +46,10 @@ class TestSortBooksIntoBoxes(unittest.TestCase):
         box2.append(book3)
         box2.append(book2)
 
-        # getting object deep comparisons related issues here, just look to make sure
-        # boxes have the requisite weight, which in this case means the proper books
-        # went into each box, for production we could be more accurate here 
+        # getting object deep comparisons related issues here, just 
+        # look to make sure boxes have the requisite weight, which in this 
+        # case means the proper books went into each box, for production we could 
+        # be more accurate here 
         list_of_boxes = sort_books_into_boxes(books)
         self.assertEqual(list_of_boxes[0].totalWeight, box1.totalWeight)
         self.assertEqual(list_of_boxes[1].totalWeight, box2.totalWeight)
@@ -56,7 +57,7 @@ class TestSortBooksIntoBoxes(unittest.TestCase):
     def test_sort_empty_list(self):
         list_of_boxes = sort_books_into_boxes([])
         self.assertEqual(list_of_boxes, [])
-        
+
 
 class TestExportBoxesToJson(unittest.TestCase):
 
@@ -65,8 +66,6 @@ class TestExportBoxesToJson(unittest.TestCase):
         book1 = Book(author="Foo", weight=10)
         book2 = Book(author="Bar", weight=1)
         book3 = Book(author="Baz", weight=5)
-        
-        books = [book1,book2,book3]
         
         box1 = Box(id=1)
         box1.append(book1)
@@ -82,6 +81,9 @@ class TestExportBoxesToJson(unittest.TestCase):
         self.assertEqual(jsondata[0]['totalWeight'], 10)
         # look at a book
         self.assertEqual(jsondata[0]['contents'][0]['author'], "Foo")
+
+
+    # We could do more extensive testing of the json here if we were in production
         
  
 if __name__ == '__main__':
