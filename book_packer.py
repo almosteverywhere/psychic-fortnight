@@ -6,7 +6,7 @@ import re
 import json
 
 OUTPUT_FILE = "data.json"
-
+DATA_DIR = "data"
 
 class Book(object):
     """
@@ -180,17 +180,18 @@ def export_boxes_to_json(all_boxes, output_file=OUTPUT_FILE):
     json.dump(all_boxes, f, indent=4, default=lambda x: x.__dict__)
 
 
-def extract_book_data():
+def extract_book_data(directory="data"):
     """
     Given a set of sample book files, extract the book data, pack the 20 books into
     N boxes with a weight of no more than 10 pounds each, and output the box data to
     a JSON file. 
+    :param directory where the data files are 
     """
 
     books = []
 
     # extract book data from files 
-    for filename in os.listdir("data"):
+    for filename in os.listdir(directory):
         book = get_book_data_from_file(filename)
         books.append(book)
 
@@ -204,10 +205,8 @@ def extract_book_data():
     export_boxes_to_json(all_boxes)
 
     
-
 if __name__ == "__main__":
 
-    extract_book_data()
+    extract_book_data(DATA_DIR)
     
-
-    
+   

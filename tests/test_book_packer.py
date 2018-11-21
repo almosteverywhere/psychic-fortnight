@@ -1,5 +1,5 @@
 from extracting_book_data import get_book_data_from_file, sort_books_by_weight, \
-    sort_books_into_boxes, export_boxes_to_json, Book, Box, OUTPUT_FILE
+    sort_books_into_boxes, export_boxes_to_json, extract_book_data, Book, Box, OUTPUT_FILE
 import unittest
 import json
 
@@ -105,6 +105,26 @@ class TestBoxClass(unittest.TestCase):
     # the Decimal module for arithmetic is not json serializable. In the interest of time
     # I'm going to leave it as is, but this is something that should be solved in a production
     # application. 
+
+class TestExtractBookData(unittest.TestCase):
+    
+    def test_extract_book_data(self):
+        test_data_dir = "tests/data"
+        # for production we'd mock the output file here, but for now let's
+        # use the existing one
+        extract_book_data(test_data_dir)
+        f = open("data.json")
+
+        data = f.read()
+        jsondata = json.loads(data)
+        import pdb; pdb.set_trace()
+        # look at first record
+        self.assertEqual(jsondata[0]['totalWeight'], 10)
+        # look at a book
+        self.assertEqual(jsondata[0]['contents'][0]['author'], "Foo")
+
+
+
         
  
 if __name__ == '__main__':
