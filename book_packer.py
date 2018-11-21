@@ -8,6 +8,7 @@ import json
 OUTPUT_FILE = "data.json"
 DATA_DIR = "data"
 
+
 class Book(object):
     """
     Book, it has an author, title, price, shipping weight and ISBN 10 number.

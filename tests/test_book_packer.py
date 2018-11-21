@@ -3,7 +3,6 @@ from book_packer import get_book_data_from_file, sort_books_by_weight, \
 import unittest
 import json
 
-
 class TestGetBookDataFromFile(unittest.TestCase):
     def test_get_book_data_from_file(self):
 
@@ -74,7 +73,7 @@ class TestExportBoxesToJson(unittest.TestCase):
         box2.append(book3)
         box2.append(book2)
 
-        export_boxes_to_json([box1, box2], output_file="test.json")
+        export_boxes_to_json([box1, box2], output_file=test_file)
         
         f = open("test.json")
         data = f.read()
@@ -105,6 +104,7 @@ class TestBoxClass(unittest.TestCase):
     # the Decimal module for arithmetic is not json serializable. In the interest of time
     # I'm going to leave it as is, but this is something that should be solved in a production
     # application. 
+
 
 class TestExtractBookData(unittest.TestCase):
     
