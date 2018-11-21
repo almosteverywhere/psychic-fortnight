@@ -61,8 +61,10 @@ class Box(object):
 
 def get_book_data_from_file(filename):
     """
-    Takes a filename 
-    Returns a book object with the relevant data
+    Extract the relevant fields from one html page
+    and returns a Book object
+    :param filename to extract the data from 
+    :return Book object 
     """
 
     f = codecs.open("data/" + filename)
@@ -113,7 +115,9 @@ def get_book_data_from_file(filename):
 
 def sort_books_by_weight(books):
     """
-    Takes a list of book objects, returns a list of books objects sorted by weight
+    Take a list of Book objects and return a list of Book objects sorted by weight. 
+    :param books list of Book objects
+    :return a list of Book objects sorted by weight  
     """
     sorted_books = sorted(books, key=attrgetter('weight'), reverse=True) 
     
@@ -125,7 +129,9 @@ def sort_books_into_boxes(sorted_books):
     Given a sorted list of book objects, return a list of boxes containing a reasonable
     packing of the books into boxes, with each box containing not more than 10 pounds of books.
     Sorting like this is related to knapsack problem, which is NP-complete, 
-    so in the interests of time we implemented a simple solution since our list of books is not long. 
+    in the interest of time we implemented a simple solution since our list of books is not long. 
+    :param List of Book objects sorted by weight
+    :return List of Box objects each box containing not more than 10 pounds of books.
     """
     
     all_boxes = []
@@ -173,6 +179,8 @@ def export_boxes_to_json(all_boxes, output_file=OUTPUT_FILE):
     """
     Given a list of Box objects, export contents to json format
     We don't return anything because it's easier to dump the json directly to a file.  
+    :param A list of Box objects
+    :param a file to output the json to
     """
 
     f = open(output_file, "w")
